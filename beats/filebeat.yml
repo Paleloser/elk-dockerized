@@ -1,0 +1,11 @@
+filebeat.prospectors:
+  - type: log
+    paths:
+      - /log/*.log
+      - /log/*/*.log
+      - /log/*/*/*.log
+output.logstash:
+  hosts: ["logstash:5044"]
+setup.dashboards.enabled: true
+setup.kibana:
+  host: "192.168.5.5:5601" 

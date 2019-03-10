@@ -1,0 +1,69 @@
+version: '3.2'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    container_name: elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - type: volume 
+        source: estemp
+        target: /usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    restart: on-failure
+    networks:
+      - elk
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.6.0
+    container_name: logstash
+    restart: on-failure
+    environment:
+      - COMMUNITY
+      - ALLSAFE
+      - NAS
+      - VPN
+    volumes:
+      - ./logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
+      - ./logstash/pipeline/:/usr/share/logstash/pipeline/:ro
+    ports:
+      - 5044:5044
+    networks:
+      elk:
+        ipv4_address: 192.168.5.10
+  packetbeat:
+    image: docker.elastic.co/beats/packetbeat:6.6.0
+    container_name: packetbeat
+    restart: on-failure
+    volumes:
+      - ./beats/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml:ro
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    network_mode: "host"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.6.0
+    container_name: kibana
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    ports:
+      - 5601:5601
+    restart: on-failure
+    networks:
+      elk:
+        ipv4_address: 192.168.5.5
+    depends_on:
+      - elasticsearch
+volumes:
+  estemp:
+networks:
+  elk:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.5.0/24

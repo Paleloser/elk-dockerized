@@ -1,0 +1,4 @@
+- pipeline.id: beats-pipeline
+  path.config: "/usr/share/logstash/pipeline/beats.conf"
+- pipeline.id: snmp-pipeline
+  path.config: "/usr/share/logstash/pipeline/snmp.conf"

@@ -1,0 +1,56 @@
+packetbeat.interfaces.device: any
+packetbeat.protocols:
+
+- type: icmp
+  enabled: true 
+
+- type: ssh
+  ports: [22]
+
+- type: dhcpv4
+  ports: [67, 68]
+
+- type: dns
+  ports: [53]
+  include_authorities: true
+  include_additionals: true
+
+- type: http
+  ports: [80, 8080, 8081, 5000, 8002]
+  hide_keywords: ["pass", "password", "passwd"]
+  send_headers: ["User-Agent", "Cookie", "Set-Cookie"]
+  split_cookie: true
+  real_ip_header: "X-Forwarded-For"
+
+- type: memcache
+  ports: [11211]
+
+- type: mysql
+  ports: [3306]
+
+- type: pgsql
+  ports: [5432]
+
+- type: redis
+  ports: [6379]
+
+- type: thrift
+  ports: [9090]
+
+- type: mongodb
+  ports: [27017]
+
+- type: cassandra
+  ports: [9042]
+
+- type: tls
+  ports: [443]
+
+packetbeat.procs:
+  enabled: true
+
+output.logstash:
+  hosts: ["192.168.5.10:5044"]
+setup.dashboards.enabled: true
+setup.kibana:
+  host: "192.168.5.5:5601" 
