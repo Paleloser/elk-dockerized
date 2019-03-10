@@ -1,0 +1,4 @@
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.keystore.path: certs/${CERT_NAME}
+xpack.security.transport.ssl.truststore.path: certs/${CA_NAME}

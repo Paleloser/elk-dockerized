@@ -4,9 +4,6 @@ packetbeat.protocols:
 - type: icmp
   enabled: true 
 
-- type: ssh
-  ports: [22]
-
 - type: dhcpv4
   ports: [67, 68]
 
@@ -49,8 +46,18 @@ packetbeat.protocols:
 packetbeat.procs:
   enabled: true
 
-output.logstash:
-  hosts: ["192.168.5.10:5044"]
+packetbeat.flows:
+  timeout: 30s
+  period: 10s
+  enabled: true
+
+# By setting ES as output we can send it the Index Template
+setup.template.enabled: true
+output.elasticsearch:
+  hosts: ["192.168.5.15:9200"]
+  pipeline: geoip-info
+
+# After having sent the Index Template, send to Kibana the Dashboards
 setup.dashboards.enabled: true
 setup.kibana:
   host: "192.168.5.5:5601" 
